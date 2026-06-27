@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מנוע חיפוש ומחשבון שוק העבודה - ARVOH</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for Hebrew -->
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Assistant', 'Rubik', sans-serif;
+            background-color: #f8fafc;
+        }
+        /* הסתרת סרגל גלילה בדפדפנים שונים לשמירה על נראות נקייה בנייד */
+        .scrollbar-none::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-none {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col antialiased selection:bg-indigo-100">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="p-3 bg-indigo-600 rounded-2xl shadow-inner text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">שוק העבודה - כלי עזר חכם למבחן</h1>
+                    <p class="text-indigo-200 text-sm mt-1 font-medium">מנוע חיפוש אופליין ומחשבון מדדים מהיר על פי חומרי ד"ר גלית אהרון</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs (Only Search & Calculator - Responsive Version) -->
+    <div class="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <nav class="flex overflow-x-auto scrollbar-none space-x-reverse space-x-2 sm:space-x-4 md:space-x-8 py-2.5 sm:py-3 -mb-px" aria-label="Tabs">
+                <button onclick="switchTab('search')" id="tab-search" class="tab-btn px-3.5 py-2.5 sm:px-5 sm:py-3 rounded-xl text-xs sm:text-sm md:text-base font-bold transition-all whitespace-nowrap flex items-center gap-1.5 sm:gap-2 bg-indigo-50 text-indigo-700 border-2 border-indigo-600/10">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    מנוע חיפוש אופליין מורחב
+                </button>
+                <button onclick="switchTab('calculator')" id="tab-calculator" class="tab-btn px-3.5 py-2.5 sm:px-5 sm:py-3 rounded-xl text-xs sm:text-sm md:text-base font-semibold text-slate-600 hover:text-indigo-600 hover:bg-slate-50 transition-all whitespace-nowrap flex items-center gap-1.5 sm:gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 11h.01M12 7h.01M15 11h.01M15 14h.01M15 17h.01M9 11h.01M20 12a8 8 0 11-16 0 8 8 0 0116 0z" />
+                    </svg>
+                    מחשבון מדדים ונוסחאות
+                </button>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8 sm:px-6 lg:px-8">
+
+        <!-- TAB 1: OFFLINE SEARCH ENGINE -->
+        <section id="content-search" class="space-y-6">
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-slate-200 space-y-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        מנוע חיפוש חומרי הלימוד (Offline) - מסד נתונים מוחלט ומדויק
+                    </h2>
+                    <p class="text-slate-500 text-sm mt-1">איתור מהיר וממוקד של מושגים, הגדרות, תיאוריות ומגמות מתוך כלל קובצי הקורס ללא צורך בחיבור לרשת</p>
+                </div>
+
+                <!-- Search Input Group -->
+                <div class="relative">
+                    <input type="text" id="search-input" oninput="performSearch()" placeholder="הקלד מושג לחיפוש (למשל: סגרגציה תעסוקתית, Signaling, חוק החברות הממשלתיות, מודל ויסקונסין, EPL)..." class="w-full pl-4 pr-12 py-4 rounded-2xl border-2 border-slate-200 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-500/10 text-lg transition-all shadow-sm focus:outline-none">
+                    <div class="absolute right-4 top-4 text-slate-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Quick Keywords Tags -->
+                <div class="space-y-2">
+                    <span class="block text-xs font-bold text-slate-400 uppercase tracking-wider">מושגי מפתח מדויקים (לחיצה מהירה):</span>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="setSearchQuery('סגרגציה תעסוקתית')" class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-xl text-xs font-bold border border-rose-200/60 transition-all">סגרגציה תעסוקתית</button>
+                        <button onclick="setSearchQuery('Signaling')" class="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl text-xs font-bold border border-indigo-200 transition-all">איתות (Signaling)</button>
+                        <button onclick="setSearchQuery('חוק החברות הממשלתיות')" class="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-xl text-xs font-bold border border-emerald-200 transition-all">חוק החברות הממשלתיות</button>
+                        <button onclick="setSearchQuery('ראשוני')" class="px-3 py-1.5 bg-slate-50 hover:bg-indigo-50 text-slate-600 hover:text-indigo-700 rounded-xl text-xs font-bold border border-slate-200 transition-all">שוק עבודה ראשוני</button>
+                        <button onclick="setSearchQuery('שניוני')" class="px-3 py-1.5 bg-slate-50 hover:bg-indigo-50 text-slate-600 hover:text-indigo-700 rounded-xl text-xs font-bold border border-slate-200 transition-all">שוק עבודה שניוני</button>
+                        <button onclick="setSearchQuery('אפליה סטטיסטית')" class="px-3 py-1.5 bg-slate-50 hover:bg-indigo-50 text-slate-600 hover:text-indigo-700 rounded-xl text-xs font-bold border border-slate-200 transition-all">אפליה סטטיסטית</button>
+                        <button onclick="setSearchQuery('אפליה מתוך טעם')" class="px-3 py-1.5 bg-slate-50 hover:bg-indigo-50 text-slate-600 hover:text-indigo-700 rounded-xl text-xs font-bold border border-slate-200 transition-all">אפליה מתוך טעם</button>
+                        <button onclick="setSearchQuery('EPL')" class="px-3 py-1.5 bg-slate-50 hover:bg-indigo-50 text-slate-600 hover:text-indigo-700 rounded-xl text-xs font-bold border border-slate-200 transition-all">מדד EPL (נוקשות)</button>
+                        <button onclick="setSearchQuery('הדלת המסתובבת')" class="px-3 py-1.5 bg-slate-50 hover:bg-indigo-50 text-slate-600 hover:text-indigo-700 rounded-xl text-xs font-bold border border-slate-200 transition-all">הדלת המסתובבת</button>
+                        <button onclick="setSearchQuery('מודל ויסקונסין')" class="px-3 py-1.5 bg-slate-50 hover:bg-indigo-50 text-slate-600 hover:text-indigo-700 rounded-xl text-xs font-bold border border-slate-200 transition-all">מודל ויסקונסין</button>
+                        <button onclick="setSearchQuery('חברת אישורים')" class="px-3 py-1.5 bg-slate-50 hover:bg-indigo-50 text-slate-600 hover:text-indigo-700 rounded-xl text-xs font-bold border border-slate-200 transition-all">חברת אישורים</button>
+                        <button onclick="setSearchQuery('השפעת התחלופה')" class="px-3 py-1.5 bg-slate-50 hover:bg-indigo-50 text-slate-600 hover:text-indigo-700 rounded-xl text-xs font-bold border border-slate-200 transition-all">השפעת התחלופה וההכנסה</button>
+                        <button onclick="setSearchQuery('חרדים')" class="px-3 py-1.5 bg-slate-50 hover:bg-indigo-50 text-slate-600 hover:text-indigo-700 rounded-xl text-xs font-bold border border-slate-200 transition-all">תעסוקת חרדים</button>
+                        <button onclick="setSearchQuery('ערבים')" class="px-3 py-1.5 bg-slate-50 hover:bg-indigo-50 text-slate-600 hover:text-indigo-700 rounded-xl text-xs font-bold border border-slate-200 transition-all">אקדמאים ערבים</button>
+                        <button onclick="setSearchQuery('ועד עובדים')" class="px-3 py-1.5 bg-slate-50 hover:bg-indigo-50 text-slate-600 hover:text-indigo-700 rounded-xl text-xs font-bold border border-slate-200 transition-all">ועד מול ארגון עובדים</button>
+                        <button onclick="setSearchQuery('שקופות')" class="px-3 py-1.5 bg-slate-50 hover:bg-indigo-50 text-slate-600 hover:text-indigo-700 rounded-xl text-xs font-bold border border-slate-200 transition-all">עבודות שקופות</button>
+                    </div>
+                </div>
+
+                <!-- Active Filters & Counter -->
+                <div class="flex items-center justify-between border-t border-slate-100 pt-4 text-xs font-bold text-slate-400">
+                    <span id="search-counter">מציג נושאי ליבה</span>
+                    <button onclick="clearSearch()" class="text-indigo-600 hover:underline">אפס הכל</button>
+                </div>
+
+                <!-- Results Container -->
+                <div id="search-results" class="space-y-4">
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: INTERACTIVE CALCULATOR -->
+        <section id="content-calculator" class="hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Inputs Form -->
+                <div class="lg:col-span-5 bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-slate-200 space-y-6">
+                    <div>
+                        <h2 class="text-xl font-extrabold text-slate-900 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 11h.01M12 7h.01M15 11h.01M15 14h.01M15 17h.01M9 11h.01M20 12a8 8 0 11-16 0 8 8 0 0116 0z" />
+                            </svg>
+                            מחשבון מדדי כוח העבודה
+                        </h2>
+                        <p class="text-slate-500 text-xs mt-1">הזן את נתוני האוכלוסייה הגולמיים כדי לחשב במדויק ובצורה מוסברת את מדדי התעסוקה והאבטלה</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-1.5">אוכלוסייה בוגרת (גיל 15 ומעלה)</label>
+                            <div class="relative rounded-xl shadow-sm">
+                                <input type="number" id="calc-pop" value="2596" oninput="calculateLaborStats()" class="block w-full pr-4 pl-12 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-lg font-semibold text-slate-800" placeholder="לדוגמה: 2596">
+                                <span class="absolute left-3.5 top-3.5 text-slate-400 text-xs font-bold">אלפים / נפש</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-1.5">מספר מועסקים</label>
+                            <div class="relative rounded-xl shadow-sm">
+                                <input type="number" id="calc-emp" value="1241" oninput="calculateLaborStats()" class="block w-full pr-4 pl-12 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-lg font-semibold text-slate-800" placeholder="לדוגמה: 1241">
+                                <span class="absolute left-3.5 top-3.5 text-slate-400 text-xs font-bold">אלפים / נפש</span>
+                            </div>
+                            <span class="text-slate-400 text-[11px] mt-1 block">כולל עצמאיים ושכירים שעבדו לפחות שעה אחת בשבוע הקובע</span>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-1.5">מספר בלתי מועסקים (מובטלים)</label>
+                            <div class="relative rounded-xl shadow-sm">
+                                <input type="number" id="calc-unemp" value="36" oninput="calculateLaborStats()" class="block w-full pr-4 pl-12 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-lg font-semibold text-slate-800" placeholder="לדוגמה: 36">
+                                <span class="absolute left-3.5 top-3.5 text-slate-400 text-xs font-bold">אלפים / נפש</span>
+                            </div>
+                            <span class="text-slate-400 text-[11px] mt-1 block">לא עבדו כלל בשבוע הקובע וחיפשו עבודה באופן פעיל ב-4 השבועות האחרונים</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Outputs Display & Step-by-Step Path -->
+                <div class="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-8 shadow-md border border-slate-200 space-y-6">
+                    <div>
+                        <h2 class="text-xl font-extrabold text-slate-900">תוצאות החישוב ודרך הפתרון</h2>
+                        <p class="text-slate-500 text-xs mt-1">חישובים דינמיים בזמן אמת מבוססי הגדרות הלמ"ס</p>
+                    </div>
+
+                    <!-- Score Grid Cards -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100 text-center space-y-1">
+                            <span class="text-slate-500 text-[11px] font-semibold block">כוח העבודה האזרחי</span>
+                            <span class="text-xl font-black text-indigo-700 block" id="out-lf">1,277</span>
+                            <span class="text-slate-400 text-[10px]" id="out-lf-sub">(מועסקים + מובטלים)</span>
+                        </div>
+                        <div class="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100 text-center space-y-1">
+                            <span class="text-slate-500 text-[11px] font-semibold block">שיעור ההשתתפות</span>
+                            <span class="text-xl font-black text-emerald-700 block" id="out-part-rate">49.20%</span>
+                            <span class="text-slate-400 text-[10px]">(מתוך אוכלוסייה בוגרת)</span>
+                        </div>
+                        <div class="bg-blue-50/50 p-4 rounded-2xl border border-blue-100 text-center space-y-1">
+                            <span class="text-slate-500 text-[11px] font-semibold block">שיעור התעסוקה</span>
+                            <span class="text-xl font-black text-blue-700 block" id="out-emp-rate">47.80%</span>
+                            <span class="text-slate-400 text-[10px]">(מתוך אוכלוסייה בוגרת)</span>
+                        </div>
+                        <div class="bg-rose-50/50 p-4 rounded-2xl border border-rose-100 text-center space-y-1">
+                            <span class="text-slate-500 text-[11px] font-semibold block">שיעור האבטלה</span>
+                            <span class="text-xl font-black text-rose-700 block" id="out-unemp-rate">2.82%</span>
+                            <span class="text-slate-400 text-[10px]">(מתוך כוח העבודה)</span>
+                        </div>
+                    </div>
+
+                    <!-- Step-by-Step Explanation Accordion -->
+                    <div class="space-y-4">
+                        <h3 class="text-base font-bold text-slate-800">פירוט שלבי הפתרון הנדרש במבחן:</h3>
+
+                        <div class="space-y-3.5">
+                            <!-- Step 1 -->
+                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200/60">
+                                <div class="flex items-center gap-2.5 mb-2">
+                                    <span class="h-6 w-6 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs">1</span>
+                                    <h4 class="font-bold text-sm text-slate-800">מציאת כוח העבודה האזרחי (LF)</h4>
+                                </div>
+                                <div class="text-xs text-slate-600 space-y-1.5 mr-8">
+                                    <div class="flex items-center gap-1">
+                                        <strong class="font-semibold text-slate-800">הנוסחה:</strong>
+                                        <span class="font-mono font-bold bg-slate-100 text-slate-800 px-2 py-0.5 rounded" dir="ltr">LF = מועסקים + בלתי מועסקים</span>
+                                    </div>
+                                    <div id="calc-step-1" class="font-medium text-slate-500">חישוב: -</div>
+                                </div>
+                            </div>
+
+                            <!-- Step 2 -->
+                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200/60">
+                                <div class="flex items-center gap-2.5 mb-2">
+                                    <span class="h-6 w-6 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs">2</span>
+                                    <h4 class="font-bold text-sm text-slate-800">חישוב שיעור ההשתתפות בכוח העבודה</h4>
+                                </div>
+                                <div class="text-xs text-slate-600 space-y-1.5 mr-8">
+                                    <div class="flex items-center flex-wrap gap-1.5">
+                                        <strong class="font-semibold text-slate-800">הנוסחה:</strong>
+                                        <span class="font-medium">שיעור ההשתתפות =</span>
+                                        <div class="inline-flex flex-col items-center text-[10px] font-mono font-bold mx-1" dir="ltr">
+                                            <span class="border-b border-slate-400 px-1.5 pb-0.5">כוח העבודה (LF)</span>
+                                            <span class="pt-0.5 px-1.5">אוכלוסייה בוגרת (15+)</span>
+                                        </div>
+                                        <span class="font-bold font-mono">× 100</span>
+                                    </div>
+                                    <div id="calc-step-2">חישוב: -</div>
+                                </div>
+                            </div>
+
+                            <!-- Step 3 -->
+                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200/60">
+                                <div class="flex items-center gap-2.5 mb-2">
+                                    <span class="h-6 w-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs">3</span>
+                                    <h4 class="font-bold text-sm text-slate-800">חישוב שיעור התעסוקה (מדד תעסוקה)</h4>
+                                </div>
+                                <div class="text-xs text-slate-600 space-y-1.5 mr-8">
+                                    <div class="flex items-center flex-wrap gap-1.5">
+                                        <strong class="font-semibold text-slate-800">הנוסחה:</strong>
+                                        <span class="font-medium">שיעור התעסוקה =</span>
+                                        <div class="inline-flex flex-col items-center text-[10px] font-mono font-bold mx-1" dir="ltr">
+                                            <span class="border-b border-slate-400 px-1.5 pb-0.5">מועסקים</span>
+                                            <span class="pt-0.5 px-1.5">אוכלוסייה בוגרת (15+)</span>
+                                        </div>
+                                        <span class="font-bold font-mono">× 100</span>
+                                    </div>
+                                    <div id="calc-step-employment">חישוב: -</div>
+                                </div>
+                            </div>
+
+                            <!-- Step 4 -->
+                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200/60">
+                                <div class="flex items-center gap-2.5 mb-2">
+                                    <span class="h-6 w-6 rounded-full bg-rose-600 text-white flex items-center justify-center font-bold text-xs">4</span>
+                                    <h4 class="font-bold text-sm text-slate-800">חישוב שיעור האבטלה</h4>
+                                </div>
+                                <div class="text-xs text-slate-600 space-y-1.5 mr-8">
+                                    <div class="flex items-center flex-wrap gap-1.5">
+                                        <strong class="font-semibold text-slate-800">הנוסחה:</strong>
+                                        <span class="font-medium">שיעור האבטלה =</span>
+                                        <div class="inline-flex flex-col items-center text-[10px] font-mono font-bold mx-1" dir="ltr">
+                                            <span class="border-b border-slate-400 px-1.5 pb-0.5">בלתי מועסקים</span>
+                                            <span class="pt-0.5 px-1.5">כוח העבודה (LF)</span>
+                                        </div>
+                                        <span class="font-bold font-mono">× 100</span>
+                                    </div>
+                                    <div id="calc-step-3">חישוב: -</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 text-slate-500 py-6 text-center text-sm font-semibold">
+        <div class="max-w-7xl mx-auto px-4">
+            <span>מלווה הכנה דינמי למבחן בשוק העבודה - ד"ר גלית אהרון © 2026</span>
+        </div>
+    </footer>
+
+    <script>
+        // Category Filter State
+        let activeCategory = 'all';
+
+        // Fully comprehensive Search Database strictly utilizing course terminology
+        const searchCorpus = [
+            {
+                id: 1,
+                title: "הגדרות הלמ\"ס הרשמיות - 'השבוע הקובע'",
+                category: "statistics",
+                source: "ארגון החומר למבחן.docx / מילון מושגים מפורט",
+                tags: ["למס", "השבוע הקובע", "סקר"],
+                content: "על פי הלשכה המרכזית לסטטיסטיקה (למ\"ס), השבוע הקובע מוגדר כחצי השבוע שמסתיים ביום שבת שלפני עריכת סקר כוח האדם. על פיו נקבע במדויק המעמד התעסוקתי של הפרט (מועסק, בלתי מועסק או לא שייך)."
+            },
+            {
+                id: 2,
+                title: "הגדרת 'מועסק' (Employed) ותנאי הנעדרים",
+                category: "statistics",
+                source: "ארגון החומר למבחן.docx / שוק העבודה .pdf",
+                tags: ["מועסק", "למס", "חיילים", "נעדר זמנית"],
+                content: "מועסקים הם אנשים בני 15 ומעלה שעבדו לפחות שעה אחת בשבוע הקובע בעבודה מניבת שכר או רווח. כולל שכירים, עצמאים, חברי קיבוץ, ובני משפחה שעבדו בעסק משפחתי מעל 15 שעות בשבוע ללא תשלום. כולל נעדרים זמנית (מילואים, מחלה, חופשה, שביתה, עיצומים) בתנאי שיש להם זיקה רשמית למקום העבודה וההיעדרות היא עד שנה אחת. חיילים בשירות חובה וקבע נחשבים מועסקים החל משנת 2012."
+            },
+            {
+                id: 3,
+                title: "הגדרת 'בלתי מועסק' (Unemployed) על פי הלמ\"ס",
+                category: "statistics",
+                source: "הגדרות הלמס עבודה ושכר.pdf / ארגון החומר למבחן.docx",
+                tags: ["מובטל", "בלתי מועסק", "חיפוש עבודה", "למס"],
+                content: "בלתי מועסקים (מובטלים) הם אנשים בני 15 ומעלה שלא עבדו אפילו שעה אחת בשבוע הקובע, חיפשו עבודה באופן פעיל ב-4 השבועות שקדמו לסקר (בלשכה, אתרי דרושים, פניות למעסיקים) והיו זמינים להתחיל לעבוד מיד בשבוע הקובע."
+            },
+            {
+                id: 4,
+                title: "לא שייכים לכוח העבודה ו'עובדים מיואשים'",
+                category: "statistics",
+                source: "ארגון החומר למבחן.docx / שוק העבודה .pdf",
+                tags: ["לא שייכים", "עובדים מיואשים", "סטודנטים", "אשליה אופטית"],
+                content: "לא שייכים לכוח העבודה הם בני 15 ומעלה שלא עבדו בשבוע הקובע וגם לא חיפשו עבודה באופן פעיל ב-4 השבועות האחרונים (סטודנטים, עקרות בית, גמלאים, מתנדבים, או בני משפחה שעבדו בעסק פחות מ-15 שעות). עובדים מיואשים הם אנשים שרצו לעבוד אך הפסיקו לחפש באופן פעיל כי האמינו שאין סיכוי למצוא. הם יוצאים מכוח העבודה ונחשבים 'לא שייכים', מה שיוצר אשליה אופטית של ירידה בשיעור האבטלה הרשמי."
+            },
+            {
+                id: 5,
+                title: "שכר לעומת משכורת והכנסה",
+                category: "statistics",
+                source: "מילון מושגים מפורט_ שוק העבודה.docx",
+                tags: ["שכר", "משכורת", "הכנסה", "הבדלים"],
+                content: "שכר (Wage): תגמול המבוסס על כמות שעות העבודה או ימי העבודה בפועל (משתנה). משכורת (Salary): סכום קבוע המשולם לעובד על בסיס חודשי ללא תלות ישירה בתנודות שעות העבודה. הככנסה (Income): מונח רחב הכולל את כל זרמי הכספים הנכנסים לפרט/משק בית (מעבודה, קצבאות סעד, פנסיה, ביטוח לאומי, ריבית ורנטות)."
+            },
+            {
+                id: 6,
+                title: "שביתות, השבתות ועיצומים",
+                category: "statistics",
+                source: "הגדרות הלמס עבודה ושכר.pdf / שוק העבודה .pdf",
+                tags: ["שביתה", "השבתה", "עיצומים", "סנקציות"],
+                content: "שביתה: הפסקת עבודה זמנית מתואמת ע\"י קבוצת עובדים עקב סכסוך עבודה. השבתה: סגירת מקום העבודה או מניעת עבודה ע\"י המעסיק כסנקציה נגד העובדים. עיצומים: הפרעה זמנית ומתואמת למהלך העבודה התקין (שביתת האטה, אי-מענה לטלפונים) ללא הפסקת עבודה מלאה. בלמ\"ס נספרים רק מקרים שגרמו לאובדן של לפחות חצי יום עבודה."
+            },
+            {
+                id: 7,
+                title: "ועד עובדים לעומת ארגון עובדים והכלל 'ראשון נכנס אחרון יוצא'",
+                category: "statistics",
+                source: "שוק העבודה .pdf (עמוד 2)",
+                tags: ["ועד עובדים", "ארגון עובדים", "שביתה", "LIFO", "ראשון נכנס אחרון יוצא"],
+                content: "ועד עובדים מנוהל ברמה המקומית של הארגון. לועד אין כוח ייצוג רשמי בבתי משפט והוא אינו יכול להכריז על שביתה חוקית, אך הוא מנהל מו\"מ מקומי ויכול להשפיע פנימית. ארגון עובדים (כמו ההסתדרות) הוא הגוף המוסמך החוקי היחיד לייצג בבתי משפט ולהכריז על שביתות והשבתות. ועדים וארגונים פועלים לרוב לפי כלל הוותק הקשיח: 'ראשון נכנס אחרון יוצא' (Last In, First Out - LIFO) - בעת פיטורי צמצום, העובדים החדשים ביותר יפוטרו ראשונים, והוותיקים מוגנים."
+            },
+            {
+                id: 8,
+                title: "שלושת סוגי האבטלה והטיפול המוסדי",
+                category: "statistics",
+                source: "ארגון החומר למבחן.docx / שיעור 6",
+                tags: ["אבטלה חיכוכית", "אבטלה מבנית", "אבטלה מחזורית", "חוסר ביקוש"],
+                content: "1. אבטלה חיכוכית: אבטלה זמנית קצרת טווח הנובעת מפערי מידע ומעברים טבעיים בין משרות. טיפול: שיפור העברת מידע (לשכות, אתרי דרושים). 2. אבטלה מבנית: אבטלה ממושכת הנובעת מחוסר התאמה עמוק בין כישורי/השכלת העובדים לדרישות המשרות, או עקב מרחק גאוגרפי (סגירת מפעל בפריפריה). טיפול: הכשרות והסבות מקצועיות, עידוד ניידות דיור. 3. אבטלה מחזורית / חוסר ביקוש: נגרמת ממיתון כלכלי חריף וירידה בביקוש המצרפי במשק כולו (למשל, משבר הקורונה או מיתון). טיפול: מדיניות פיסקלית/מוניטרית מרחיבה (הזרמת כספים, הורדת ריבית)."
+            },
+            {
+                id: 9,
+                title: "השלכות הרוחב של האבטלה על החברה והמשק",
+                category: "statistics",
+                source: "מילון מושגים מפורט_ שוק העבודה.docx",
+                tags: ["השלכות אבטלה", "עוני", "ילודה", "איגוד מקצועי"],
+                content: "האבטלה פוגעת מעבר למובטל עצמו: 1. על המועסקים הקיימים: מחלישה את הביטחון התעסוקתי שלהם ומקטינה את כוח המיקוח של ועדים ואיגודים מקצועיים (כי יש תור של עובדים בחוץ). 2. על המשק והחברה: הגברת עוני ופשיעה, הגירה שלילית, ירידה ברמת הילודה, ודחיית גיל עזיבת בית ההורים של צעירים עקב חוסר יציבות כלכלית."
+            },
+            {
+                id: 10,
+                title: "שוק המוצר לעומת שוק העבודה ו'ביקוש נגזר'",
+                category: "economics",
+                source: "ארגון החומר למבחן.docx / ביקוש והיצע.pdf",
+                tags: ["שוק המוצר", "שוק העבודה", "ביקוש נגזר"],
+                content: "שוק המוצר הוא המקום בו נמכרות סחורות ושירותים סופיים לצרכנים. שוק העבודה הוא שוק תשומות ייצור (כוח עבודה). הביקוש לעבודה בשוק העבודה הוא ביקוש נגזר (Derived Demand) - המעסיק אינו מבקש עובדים לשם עצמם, אלא הביקוש נגזר ישירות מהביקוש של הצרכנים למוצר הסופי שהעובד מייצר בשוק המוצר."
+            },
+            {
+                id: 11,
+                title: "תנאי קיומה של תחרות משוכללת בשוק העבודה",
+                category: "economics",
+                source: "ביקוש והיצע.pdf / שיעור 4",
+                tags: ["תחרות משוכללת", "מידע מלא", "הומוגניות", "ניידות מלאה"],
+                content: "שוק עבודה תחרותי משוכלל דורש 8 תנאים: 1. מספר רב של מעסיקים (קונים) ועובדים (מוכרים). 2. היעדר התארגנויות, ועדים או איגודים מקצועיים משני הצדדים. 3. השכר נקבע ע\"י השוק ומהווה נתון קבוע לפרט. 4. אי-התערבות ממשלתית (ללא שכר מינימום או הגנות). 5. מידע מושלם ומלא לכולם על משרות ושכר. 6. עבודה הומוגנית (העובדים זהים לחלוטין בכישוריהם). 7. ניידות מלאה וחופשית של עובדים בין אזורים ומשרות ללא עלות. 8. התנהגות רציונלית של המעסיקים (מקסום רווח) והעובדים (מקסום שכר ותועלת)."
+            },
+            {
+                id: 12,
+                title: "חוק התפוקה השולית הפוחתת (MP_L) והביקוש לעבודה",
+                category: "economics",
+                source: "ארגון החומר למבחן.docx / ביקוש והיצע.pdf",
+                tags: ["תפוקה שולית", "MP_L", "W=VMP_L", "ערך התפוקה השולית"],
+                content: "חוק התפוקה השולית הפוחתת קובע כי הוספת עובדים (כאשר שאר גורמי הייצור כמו מכונות קבועים) תביא לכך שהתרומה והתפוקה של כל עובד נוסף (MP_L) תהיה קטנה מזו של קודמו. המעסיק הרציונלי יגייס עובדים עד לנקודה שבה עלות העסקת העובד האחרון (השכר W) שווה בדיוק לערך הכספי של התפוקה שהוא מייצר (ערך התפוקה השולית - VMP_L). כלומר תנאי שיווי המשקל: W = MP_L × P = VMP_L (כאשר P הוא מחיר המוצר בשוק)."
+            },
+            {
+                id: 13,
+                title: "היצע העבודה: אפקט ההכנסה לעומת אפקט התחלופה",
+                category: "economics",
+                source: "ארגון החומר למבחן.docx / סיכום חומר למבחן",
+                tags: ["אפקט ההכנסה", "אפקט התחלופה", "עלות הזדמנות", "פנאי"],
+                content: "עליית השכר מפעילה שני כוחות מנוגדים על שעות העבודה של הפרט: 1. אפקט התחלופה (Substitution Effect): עליית השכר מייקרת את שעות הפנאי (מחיר ההזדמנות של פנאי עולה), ולכן העובד מוותר על פנאי ומציע יותר שעות עבודה (עקומה עולה). 2. אפקט ההכנסה (Income Effect): השכר הגבוה מגדיל את עושרו של הפרט, ומאחר שפנאי הוא מוצר נורמלי, הוא מעוניין לצרוך יותר פנאי ולעבוד פחות שעות (עקומה פונה שמאלה). מילון המושגים מדגיש: בישראל, אפקט התחלופה בדרך כלל חזק יותר מאפקט ההכנסה."
+            },
+            {
+                id: 14,
+                title: "עקומת היצע העבודה המפותלת לאחור (Backward-Bending)",
+                category: "economics",
+                source: "סיכום חומר למבחן שוק העבודה",
+                tags: ["היצע מפותל לאחור", "שכר גבוה", "הכנסה שולטת"],
+                content: "ברמות שכר נמוכות ובינוניות, אפקט התחלופה שולט והעובד ירצה לעבוד יותר שעות ככל שהשכר עולה. מעבר לרמת שכר מסוימת (גבוהה מאוד), אפקט ההכנסה משתלט - העובד מרגיש עשיר מספיק ומעדיף לצרוך יותר פנאי ולצמצם את שעות עבודתו, מה שגורם לעקומת ההיצע להתעקל חזרה שמאלה/לאחור."
+            },
+            {
+                id: 15,
+                title: "גמישות מול קשיחות הביקוש לעבודה (מצד המעסיק)",
+                category: "economics",
+                source: "מילון מושגים מפורט_ שוק העבודה.docx / ביקוש והיצע.pdf",
+                tags: ["גמישות ביקוש", "קשיחות ביקוש", "פיטורים"],
+                content: "מבטא את רגישות המעסיק לשינויי שכר: 1. ביקוש גמיש לעבודה: שינוי קטן בשכר גורם למעסיק להגיב בחריפות ולשנות בצורה דרסטית את כמות העובדים (פיטורים המוניים או גיוס נרחב). מאפיין עבודות פשוטות, בלתי מיומנות, ללא איגודים חזקים. 2. ביקוש קשיח לעבודה: שינוי בשכר כמעט ואינו משפיע על כמות העובדים המבוקשת, שכן המעסיק תלוי בעובדים לחלוטין (למשל, ענף החקלאות בעונת הקציר, או מקצועות התמחות ייחודיים)."
+            },
+            {
+                id: 16,
+                title: "תיאוריית ההון האנושי (Human Capital Theory) וסוגי השקעות",
+                category: "theories",
+                source: "ארגון החומר למבחן.docx / מילון מושגים מפורט",
+                tags: ["הון אנושי", "גארי בקר", "השקעה כללית", "השקעה ספציפית", "פריון"],
+                content: "תיאוריית ההון האנושי של גארי בקר (רמת הפרט/היצע) גורסת כי שוק העבודה חופשי ותחרותי, והשכר נקבע לפי הפריון השולי. השקעה בלימודים, תארים והכשרות מעלה את פריון העובד ומתורגמת לשכר גבוה. חלוקת ההשקעות: 1. השקעה כללית (General): רכישת כישורים הניתנים להעברה ממעסיק למעסיק (ידיעת שפה, נהיגה, מתמטיקה). העובד מממן השקעה זו בעצמו. 2. השקעה ספציפית (Specific): כישורים המתאימים רק למעסיק ולפירמה הספציפית (תוכנה פנימית, תהליך ייצור ייחודי). המעסיק מממן זאת, והדבר קושר את העובד לחברה ומקטין תחלופה."
+            },
+            {
+                id: 17,
+                title: "הכשרה תוך כדי עבודה (On the Job Training)",
+                category: "theories",
+                source: "מילון מושגים מפורט_ שוק העבודה.docx / מודלים תיאורטיים להסבר אי שוויון (3).pdf",
+                tags: ["הכשרה בעבודה", "ניסיון מעשי", "ותק", "פריון"],
+                content: "על פי תיאוריית ההון האנושי, חלק משמעותי מכישורי הפרט נרכש לא במוסדות לימוד אלא כהכשרה תוך כדי עבודה (On the Job Training) דרך למידה מעשית, צבירת ניסיון חיוני וקורסים פנימיים בארגון. הכשרה זו מעלה את פריון העבודה ומסבירה מדוע השכר והקידום נוטים לעלות בצורה מובנית ככל שהעובד צובר ותק וניסיון מעשי."
+            },
+            {
+                id: 18,
+                title: "בלאי ושחיקת הון אנושי (Skill Depreciation)",
+                category: "theories",
+                source: "ארגון החומר למבחן.docx / תיאוריית ההון האנושי.pdf",
+                tags: ["בלאי הון אנושי", "שחיקה", "הפסקה תעסוקתית", "נשים"],
+                content: "בלאי הון אנושי מייצג ירידת ערך, שחיקה או התיישנות של הכישורים והידע המקצועי של הפרט. נובע מהתפתחות טכנולוגית (התיישנות הידע) או עקב הפסקת עבודה ממושכת ויציאה זמנית מהשוק (מאפיין נשים בעלות דפוס תעסוקה מקוטע בשל אילוצי משפחה), דבר המוביל לירידה בפרופיל ההשתכרות עם החזרה לשוק."
+            },
+            {
+                id: 19,
+                title: "תיאוריית האיתות (Signalling Theory) והביקורת על ההון האנושי",
+                category: "theories",
+                source: "ארגון החומר למבחן.docx / מילון מושגים מפורט / ספנס",
+                tags: ["איתות", "Signalling", "ספנס", "סינון", "מידע חלקי"],
+                content: "תיאוריית האיתות (Signalling) של ספנס (1973) מהווה ביקורת על תיאוריית ההון האנושי. היא טוענת שההשכלה אינה מעלה פריון ישירות, אלא משמשת כ'אות' (Signal) או מנגנון סינון (Screening) עבור המעסיק הפועל תחת תנאי מידע חלקי. התואר הפורמלי מאותת למעסיק על תכונות מולדות של המועמד: יכולת קוגניטיבית, משמעת עצמית, כושר התמדה ופוטנציאל למידה, ומסייע לו לסנן מועמדים."
+            },
+            {
+                id: 20,
+                title: "מודל השגת הסטטוס: בלאו-דאנקן ומודל ויסקונסין",
+                category: "theories",
+                source: "ארגון החומר למבחן.docx / מילון מושגים מפורט",
+                tags: ["מודל ויסקונסין", "אחרים משמעותיים", "סטטוס שיוכי", "סטטוס הישגי", "בלאו-דאנקן"],
+                content: "המודלים בוחנים פערים על בסיס סטטוס שיוכי (Ascriptive - מאפיינים מולדים כמו רקע ההורים, מוצא, מין) מול סטטוס הישגי (Achieved - הישגי הפרט, מאמץ, השכלה). מודל בלאו-דאנקן מראה כי הרקע המעמדי של ההורים משפיע על השכלת הבן ודרכה על מעמדו המקצועי. מודל ויסקונסין (Wisconsin Model) מרחיב זאת ומוסיף משתנים פסיכולוגיים-חברתיים: הוא מדגיש שציפיות והערכות של 'אחרים משמעותיים' (Significant Others - הורים, מורים, קבוצת שוים) מעצבות את שאיפות הלימודים והקריירה של הילד בגיל צעיר, ומשפיעות ישירות על השגיו התעסוקתיים העתידיים."
+            },
+            {
+                id: 21,
+                title: "חברת אישורים (Credential Society) ואוניברסליזם",
+                category: "theories",
+                source: "מילון מושגים מפורט_ שוק העבודה.docx / רנדל קולינס",
+                tags: ["חברת אישורים", "רנדל קולינס", "אוניברסליזם", "דיפלומות", "סינון"],
+                content: "תיאוריה של רנדל קולינס לפיה החברה המודרנית דורשת תארים, דיפלומות ואישורים פורמליים מופרזים (אינפלציה של תארים) שלא לצורך ביצוע התפקיד עצמו, אלא ככלי לסינון חברתי, מונופוליזציה של מקצועות חזקים, וחסימת קבוצות חלשות. אוניברסליזם (Universalism) הוא העיקרון לפיו הערכת עובדים וקבלה לעבודה נעשות על בסיס קריטריונים ותעודות רשמיות ואובייקטיביות, בניגוד לפרטיקולריזם המבוסס על נפוטיזם וקשרים אישיים."
+            },
+            {
+                id: 22,
+                title: "סגירה חברתית (Social Closure)",
+                category: "theories",
+                source: "ארגון החומר למבחן.docx / מילון מושגים מפורט",
+                tags: ["סגירה חברתית", "מבחני סף", "רישוי", "עורכי דין"],
+                content: "סגירה חברתית היא מנגנון מוסדי ומבני שבו קבוצה מקצועית משתמשת בחוקי רישוי, הסמכה ממשלתית ומבחני סף קשיחים (כמו בחינות לשכת עורכי הדין, לשכת רואי החשבון או מועצת שמאי המקרקעין) כדי להציב קיר מונע כניסה, לצמצם את היצע העובדים החדשים, ובכך להעלות בצורה מלאכותית את ערך השוק, השכר והיוקרה של חברי הקבוצה הקיימים."
+            },
+            {
+                id: 23,
+                title: "מבנה הזדמנויות (Opportunity Structure) והביקורת המבנית",
+                category: "theories",
+                source: "ארגון החומר למבחן.docx / מודלים תיאורטיים להסבר אי שוויון (3).pdf",
+                tags: ["מבנה הזדמנויות", "ביקורת מבנית", "פריפריה", "פירמה"],
+                content: "מושג המהווה ביקורת מרכזית על מודל השגת הסטטוס וההון האנושי (שמתעלמים מגורמים מבניים). מבנה הזדמנויות (Opportunity Structure) קובע כי הישגי השכר והקידום של הפרט אינם תלויים רק במאמציו, אלא במבנה אליו הוא חשוף: האם הוא עובד בפירמה גדולה או קטנה? במפעל עתיר ידע במרכז או במפעל עתיר עבודה בפריפריה (כמו דימונה או תל אביב)? הדרך אינה פתוחה באופן שווה, והמבנה המקומי חורץ את תקרת ההצלחה."
+            },
+            {
+                id: 24,
+                title: "סגרגציה תעסוקתית מגדרית (אופקית ואנכית) ו'צווארון ורוד'",
+                category: "discrimination",
+                source: "ארגון החומר למבחן.docx / מילון מושגים מפורט / אהרון 2006",
+                tags: ["סגרגציה", "סגרגציה תעסוקתית", "סגרגציה אופקית", "סגרגציה אנכית", "צווארון ורוד", "תקרת הזכוכית"],
+                content: "סגרגציה תעסוקתית (בידול) היא ריכוז מגדרי מובחן בעיסוקים ותפקידים שונים: 1. סגרגציה אופקית (Horizontal): ריכוז נשים במקצועות 'צווארון ורוד' (חינוך, רווחה, סיעוד, שירותים) המאופיינים בשכר נמוך והערכה פחותה אך מאפשרים שעות נוחות. מקצוע נחשב נשי אקדמית אם יש בו מעל 60% נשים. 2. סגרגציה אנכית (Vertical): חסימת נשים מהתקדמות לעמדות ניהול, כוח והחלטה בכירות, תופעה המכונה 'תקרת הזכוכית' (Glass Ceiling)."
+            },
+            {
+                id: 25,
+                title: "סגרגציה (בידול) בתוך מקצועות",
+                category: "discrimination",
+                source: "מילון מושגים מפורט_ שוק העבודה.docx",
+                tags: ["סגרגציה בתוך מקצועות", "בידול פנימי", "עורכי דין", "מגזר ציבורי"],
+                content: "סגרגציה בתוך מקצועות (Internal Occupational Segregation) מתרחשת כאשר גברים ונשים מחזיקים באותו תואר, מקצוע והכשרה פורמלית, אך מנותבים בפועל לתתי-תחומים, התמחויות או סקטורים שונים לחלוטין. דוגמה מובהקת מהקורס: עורכי דין גברים המתרכזים בסקטור הפרטי, המסחרי והעסקי הרווחי, לעומת עורכות דין נשים המרוכזות בסקטור הציבורי, בפרקליטות, בשירות המדינה או בדיני משפחה, מה שמנציח פערי שכר מגדריים באותו מקצוע."
+            },
+            {
+                id: 26,
+                title: "תיאוריית התלות הכלכלית וקיטוע תעסוקתי (אהרון 2006)",
+                category: "discrimination",
+                source: "אהרון גלית 2006.pdf / מילון מושגים מפורט",
+                tags: ["תלות כלכלית", "קיטוע תעסוקתי", "מפרנס משני", "אהרון"],
+                content: "מחקרה של ד\"ר גלית אהרון (2006) מוכיח תלות כלכלית מתמשכת של נשים נשואות בישראל בבני זוגן. דפוס התעסוקה הנשי מאופיין ב'קיטוע תעסוקתי' (כניסות ויציאות תכופות משוק העבודה עקב אילוצי משפחה, לידות וגידול ילדים) ועבודה שכיחה במשרות חלקיות. הדבר מקבע אותן כמפרנסות משניות ומביא לכך שנשים מרוויחות בממוצע רק כ-64% מגברים בישראל."
+            },
+            {
+                id: 27,
+                title: "עבודות שקופות (Transparent Labor) ומדד המגדר",
+                category: "discrimination",
+                source: "מילון מושגים מפורט_ שוק העבודה.docx",
+                tags: ["עבודות שקופות", "מדד המגדר", "משק בית", "ללא תשלום"],
+                content: "מונח מתוך 'מדד המגדר' המתייחס לכלל עבודות הבית, אחזקת משק הבית, ניהול המשפחה והטיפול בילדים המבוצעות לרוב ע\"י נשים ללא שכר, חינם ובאופן 'שקוף'. עבודה זו אינה מתוגמלת כלכלית ואינה נספרת במדדי התוצר הלאומי (GDP) של המדינה, למרות שהיא מהווה תשתית חיונית המאפשרת את קיומו של כוח העבודה האזרחי."
+            },
+            {
+                id: 28,
+                title: "אפליה סטטיסטית לעומת אפליה מתוך טעם (Taste for Discrimination)",
+                category: "discrimination",
+                source: "ארגון החומר למבחן.docx / שוק עבודה מפולח.pdf / גארי בקר",
+                tags: ["אפליה סטטיסטית", "אפליה מתוך טעם", "גארי בקר", "דעה קדומה", "מידע חלקי"],
+                content: "1. אפליה סטטיסטית: החלטה רציונלית-כלכלית אך מפלה, הנובעת מהיעדר מידע מלא על פריון המועמד הספציפי. המעסיק משתמש בממוצע הסטטיסטי הידוע של קבוצת ההשתייכות של המועמד כדי לקבל החלטת סינון/שכר (למשל: אי-גיוס נשים צעירות מחשש לחופשות לידה). 2. אפליה מתוך טעם: מודל של גארי בקר לפיו האפליה אינה רציונלית ונובעת מדעה קדומה, סלידה או העדפה אישית של המעסיק, העובדים האחרים או הלקוחות ממגע עם קבוצת המיעוט. מעסיק בעל 'טעם לאפליה' מוכן לשלם על כך מחיר כלכלי ממשי (לוותר על רווחים ועל עובדים יעילים וזולים) כדי לא להעסיקם."
+            },
+            {
+                id: 29,
+                title: "חסמי תעסוקה ומאפיינים ייחודיים במגזר החרדי",
+                category: "segments",
+                source: "החרדים בישראל.pdf / שוק העבודה.pdf / מילון מושגים מפורט.pdf / דוח בנק ישראל 2014.pdf",
+                tags: ["חרדים", "גברים חרדים", "נשים חרדיות", "לימודי ליבה", "חסמים"],
+                content: "החברה החרדית בישראל מאופיינת בדפוס ייחודי והפוך מהכלל הארצי: שיעור ההשתתפות והתעסוקה של נשים חרדיות הוא גבוה מאוד (מעל 70-80%), בעוד שיעור התעסוקה של גברים חרדיים נמוך משמעותית מהממוצע הכללי (פחות מ-50% עקב הבחירה בלימוד תורה בכוללים). חסמי הכניסה המרכזיים של הגבר החרדי לשוק העבודה כוללים: אי-לימוד מקצועות יסוד (לימודי ליבה כגון מתמטיקה, אנגלית ומחשבים בישיבות), מחסור ברשת קשרים חברתיים מחוץ לקהילה, דחיית גיל הגיוס לצבא המונעת יציאה מוקדמת לעבודה, והדרישה התרבותית לסביבת עבודה המותאמת לאורח חייהם הדתי (הפרדה מגדרית וללא אינטרנט לא מסונן)."
+            },
+            {
+                id: 30,
+                title: "חסמי תעסוקה ומאפיינים ייחודיים במגזר הערבי",
+                category: "segments",
+                source: "הערבים בישראל.pdf / שוק העבודה.pdf / מילון מושגים מפורט.pdf / דוח בנק ישראל 2014.pdf",
+                tags: ["ערבים", "נשים ערביות", "אקדמאים ערבים", "הוראה", "ניידות", "תחבורה"],
+                content: "המגזר הערבי בישראל מתמודד עם פערים וחסמים עמוקים. נשים ערביות מאופיינות בשיעור השתתפות נמוך במיוחד (סביב 30-40%) בשל חסמים גיאוגרפיים ותרבותיים: מחסור במקומות תעסוקה ואזורי תעשייה בתוך היישובים הערביים, קשיים בניידות (היעדר תחבורה ציבורית מספקת), מחסור חמור במסגרות לגיל הרך (מעונות יום) ותרבות מסורתית. אקדמאים ערבים (נשים וגברים כאחד) מתקשים להשתלב במקצוע שלמדו בשוק הפרטי המתקדם עקב היעדר הון חברתי (רשתות קשרים חברתיים המקובלות בשוק היהודי), ונוטים להתרכז יתר על המידה במגזר הציבורי המקומי ובמקצועות ההוראה והחינוך בתוך היישובים שלהם."
+            },
+            {
+                id: 31,
+                title: "התערבות ממשלתית למניעת קריסת מפעלים בפריפריה",
+                category: "segments",
+                source: "Labor Market Dynamics: Unemployment, Rigidity, and Economic Structures / שיעור 6",
+                tags: ["התערבות ממשלתית", "ירוחם", "קריית שמונה", "כשל שוק", "מפעלי טקסטיל"],
+                content: "במצבי משבר בפריפריה, כגון סגירה מתוכננת של מפעלים גדולים המעסיקים חלק ניכר מתושבי היישוב (כגון מפעלי טקסטיל או שימורים בירוחם או קריית שמונה), המדינה נוטה להתערב ולסבסד או להציל את המפעלים על אף חוסר כדאיות כלכלית טהורה. ד\"ר גלית אהרון מסבירה כי ההתערבות נעשית משיקולים סוציאליים ומניעת קריסה חברתית-כלכלית של יישובים שלמים, שכן עלות תשלום דמי אבטלה ותמיכה סוציאלית בהיקף כה רחב גבוהה ויקרה יותר למדינה מאשר סבסוד המפעל בטווח הקצר."
+            },
+            {
+                id: 32,
+                title: "הון חברתי (Social Capital) ורשתות קשרים חברתיות",
+                category: "theories",
+                source: "מילון מושגים מפורט.pdf / שיעור 7",
+                tags: ["הון חברתי", "קשרים", "רשתות", "מידע", "גיוס"],
+                content: "הון חברתי מוגדר כמשאבים הנגישים לפרט באמצעות רשתות הקשרים החברתיות שלו (חברים, משפחה, קולגות מהעבר). בשוק העבודה, הון חברתי קריטי למציאת עבודה איכותית (במיוחד בשוק הנסתר שאינו מתפרסם במודעות דרושים) ומסביר מדוע מיעוטים או קבוצות מוחלשות (חרדים, ערבים) מתקשים להשתלב במקומות עבודה מובילים, גם כאשר ההון האנושי הפורמלי שלו (תארים) גבוה, עקב היעדר קשרים מקשרים (Bridging Social Capital)."
+            },
+            {
+                id: 33,
+                title: "יוקרה תעסוקתית לעומת סטטוס מקצועי",
+                category: "theories",
+                source: "שוק עבודה מפולח.pdf / מילון מושגים מפורט.pdf / שיעור 7",
+                tags: ["יוקרה תעסוקתית", "סטטוס מקצועי", "סולם יוקרה", "אובייקטיבי"],
+                content: "יש להבחין בין שני מדדים שונים להערכת מקצועות: 1. יוקרה תעסוקתית (Occupational Prestige) - מדד סובייקטיבי המבוסס על הערכת הציבור הרחב והכבוד שהוא מייחס למקצועות שונים (נמדד בסקרי דעת קהל, כמו סולם טריימן). 2. סטטוס מקצועי / סוציו-אקונומי (Occupational Status) - מדד אובייקטיבי לחלוטין המחושב באופן מתמטי-סטטיסטי על בסיס רמת ההשכלה הממוצעת וגובה ההכנסה הממוצעת של העוסקים במקצוע בפועל."
+            },
+            {
+                id: 34,
+                title: "בלאי הון אנושי (Human Capital Depreciation)",
+                category: "theories",
+                source: "תיאוריית ההון האנושי.pdf / מילון מושגים מפורט.pdf",
+                tags: ["בלאי הון אנושי", "בלאי", "השכלה", "הפסקה תעסוקתית"],
+                content: "בלאי הון אנושי הוא שחיקה או ירידת הערך של הכישורים והידע של הפרט לאורך זמן. הבלאי נובע משתי סיבות עיקריות: 1. התיישנות ידע טכנולוגי (למשל, שפת תכנות ישנה שכבר לא בשימוש). 2. הפסקה ברצף התעסוקתי, תופעה הנפוצה בקרב נשים בעלות דפוס תעסוקה מקוטע (יציאה זמנית לגיל הרך), אשר גורמת לירידת ערך כישוריהן בעיני מעסיקים ומקשה על חזרתן לשוק העבודה באותה רמת שכר."
+            },
+            {
+                id: 35,
+                title: "רגולציה ונוקשות בשוק העבודה - EPL",
+                category: "economics",
+                source: "מבנה שוק העבודה.pdf / Labor Market Dynamics: Unemployment, Rigidity, and Economic Structures",
+                tags: ["רגולציה", "נוקשות", "EPL", "שכר מינימום"],
+                content: "רגולציה של שוק העבודה כוללת חוקים ותקנות המכתיבים את תנאי ההעסקה: שכר מינימום, הגבלות פיטורים, שעות עבודה וימי מנוחה. רגולציה חזקה יוצרת 'נוקשות שוק עבודה' (Labor Market Rigidity) המאופיינת במדד EPL גבוה. הנוקשות מגנה על העובדים הוותיקים המועסקים בשוק הראשוני ('Insiders'), אך יוצרת חסמי כניסה גבוהים לצעירים ומיעוטים ('Outsiders'), אשר נדחקים לשוק השניוני הבלתי מוגן."
+            },
+            {
+                id: 36,
+                title: "שוק המוצר לעומת שוק העבודה",
+                category: "economics",
+                source: "ביקוש והיצע.pdf / Dynamics of the Labor Market: Supply, Demand, and Regulation",
+                tags: ["שוק המוצר", "שוק העבודה", "ביקוש נגזר"],
+                content: "שוק המוצר (Product Market) הוא השוק שבו נמכרות סחורות ושירותים סופיים לצרכנים. שוק העבודה (Labor Market) הוא שוק תשומות, שבו נמכר כוח עבודה של פרטים למעסיקים. הקשר המרכזי ביניהם הוא שהביקוש לעבודה בשוק העבודה הוא 'ביקוש נגזר' – המעסיק מבקש עובדים רק מפני שיש ביקוש למוצרים שהעובדים מייצרים בשוק המוצרים. אם הביקוש למוצר יורד, הביקוש לעובדים המייצרים אותו ירד בהתאמה."
+            },
+            {
+                id: 37,
+                title: "סגירה חברתית (Social Closure)",
+                category: "theories",
+                source: "מילון מושגים מפורט_ שוק העבודה.docx / שיעור 9",
+                tags: ["סגירה חברתית", "רישוי", "מבחני סף", "לשכה", "ערך השוק"],
+                content: "סגירה חברתית היא שימוש בדרישות רישוי, הסמכה, ומבחני סף (כמו בחינות לשכת עורכי הדין או לשכת רואי החשבון) כדי לצמצם את היצע העובדים החדשים בשוק מקצועי מסוים. צמצום זה נועד להעלות את ערך השוק, את גובה השכר ואת היוקרה של המקצוע עבור העוסקים בו כיום, על ידי מניעת כניסת מתחרים חדשים."
+            },
+            {
+                id: 38,
+                title: "עבודות שקופות (Transparent / Unpaid Labor)",
+                category: "discrimination",
+                source: "מילון מושגים מפורט_ שוק העבודה.docx / מדד המגדר",
+                tags: ["עבודות שקופות", "מדד המגדר", "משק בית", "חינם", "שקוף"],
+                content: "במסגרת ניתוח מגדרי, המושג 'עבודות שקופות' מתייחס לעבודה הקשורה לאחזקת משק הבית וניהול המשפחה (ניקיון, כביסה, בישול, טיפול וגידול הילדים) המבוצעת לרוב על ידי נשים, שאינה מתוגמלת בשכר כלכלי ואינה נמדדת בסטטיסטיקות הרשמיות של התוצר הלאומי, למרות חיוניותה העצומה לקיומו של כוח העבודה ושל החברה."
+            },
+            {
+                id: 39,
+                title: "עבודה חלקית מרצון ושלא מרצון",
+                category: "segments",
+                source: "מילון מושגים מפורט_ שוק העבודה.docx / נשים בשוק העבודה",
+                tags: ["משרה חלקית", "מרצון", "שלא מרצון", "אמהות", "היצע"],
+                content: "יש להבחין בין שני סוגי משרה חלקית: 1. עבודה חלקית מרצון (Voluntary Part-Time) - בחירה מודעת של העובד/ת (נפוץ מאוד בקרב אמהות) לשם שילוב חיי משפחה ומטלות הבית עם קריירה. 2. עבודה חלקית שלא מרצון (Involuntary Part-Time) - מצב שבו העובד/ת מעוניינ/ת ומסוגל/ת לעבוד במשרה מלאה, אך נאלצ/ת להסתפק במשרה חלקית בלבד בשל היעדר היצע משרות מלאות מצד המעסיקים."
+            },
+            {
+                id: 40,
+                title: "הסדרים בלתי שגרתיים (Non-Standard Employment)",
+                category: "segments",
+                source: "מילון מושגים מפורט_ שוק העבודה.docx",
+                tags: ["הסדרים בלתי שגרתיים", "עובדי קבלן", "חברות כוח אדם", "מיקור חוץ", "קריאה"],
+                content: "צורות העסקה שאינן קבועות או ישירות, שנועדו להעניק גמישות פיטורים והתאמה למעסיק: עובדי קבלן, חברות כוח אדם, עובדים בקריאה (מורים מחליפים), קבלנים עצמאיים ומיקור חוץ (Outsourcing). שוק זה שייך מובהקות לשוק העבודה השניוני, ומאופיין בשכר נמוך משמעותית, חוסר יציבות תעסוקתית, והיעדר הגנות סוציאליות בהשוואה להסדר השגרתי."
+            },
+            {
+                id: 41,
+                title: "השלכות רוחב של האבטלה (חברה, משק, ומועסקים)",
+                category: "statistics",
+                source: "מילון מושגים מפורט_ שוק העבודה.docx",
+                tags: ["השלכות אבטלה", "עוני", "ילודה", "איגוד מקצועי", "ביטחון תעסוקתי"],
+                content: "האבטלה משפיעה מעבר למובטל עצמו: 1. על המועסקים - גורמת להפחתת ביטחון העבודה של העובדים הקיימים ומחלישה את כוחם של איגודים מקצועיים (בגלל היצע עובדים גדול בחוץ). 2. על החברה והמשק - מעלה את רמות העוני והפשיעה, יוצרת הגירה שלילית, וגורמת לירידה בשיעורי ילודה ודחיית גיל עזיבת בית ההורים בשל חוסר ביטחון כלכלי."
+            },
+            {
+                id: 42,
+                title: "שכר לעומת משכורת והכנסה",
+                category: "statistics",
+                source: "מילון מושגים מפורט_ שוק העבודה.docx / מילון מושגים עבודה ושכר",
+                tags: ["שכר", "משכורת", "הכנסה", "הבדל", "קצבה"],
+                content: "על פי החומר המדעי בקורס, קיים הבדל יסודי בין המונחים: 1. שכר (Wage) - תגמול המבוסס ומשתנה ישירות על פי כמות שעות העבודה או ימי התעסוקה בפועל. 2. משכורת (Salary) - סכום קבוע ויציב המשולם על בסיס חודשי ללא תלות ישירה בתנודתיות שעות העבודה היומיות. 3. הכנסה (Income) - מונח רחב בהרבה הכולל את כלל זרמי הכספים הנכנסים לפרט או למשק הבית, הכולל שכר/משכורת עבודה, קצבאות ממשלתיות, תמיכות סוציאליות, והכנסות פסיביות (כמו רנטות או ריביות)."
+            },
+            {
+                id: 43,
+                title: "חוק שכר שווה לעובדת ולעובד (1996)",
+                category: "discrimination",
+                source: "מילון מושגים מפורט_ שוק העבודה.docx / אפליה בשוק העבודה.pdf",
+                tags: ["חוק שכר שווה", "שכר שווה", "חקיקה", "שוויון", "עבודה שוות ערך"],
+                content: "חוק שכר שווה לעובדת ולעובד (1996) קובע חובה אקטיבית וחד-משמעית לפיה מעסיק מחויב לשלם שכר שווה לעובד ולעובדת המבצעים עבודה שווה, עבודה שווה בעיקרה או 'עבודה שוות ערך' באותו מקום עבודה. החוק קובע כי ההשוואה תחול לא רק על שכר הבסיס אלא על כל תגמול, הטבה נלוوית, מענק, רכב, טלפון, תשלום שעות נוספות או הפרשות סוציאליות."
+            },
+            {
+                id: 44,
+                title: "סגרגציה (בידול) בתוך מקצועות",
+                category: "discrimination",
+                source: "מילון מושגים מפורט_ שוק העבודה.docx",
+                tags: ["סגרגציה בתוך מקצועות", "בידול פנימי", "מגדר", "סקטורים"],
+                content: "מעבר לסגרגציה האופקית (בין מקצועות שונים), קיימת 'סגרגציה בתוך מקצועות' (Internal Occupational Segregation). במצב זה, נשים וגברים מחזיקים באותו תואר ומקצוע פורמלי אך מנותבים לסקטורים, התמחויות או תפקידים שונים לחלוטין. דוגמה מובהקת מחומרי הקורס: עורכי דין גברים המתרכזים בסקטור הפרטי, המסחרי והרווחי, לעומת עורכות דין נשים המרוכזות בסקטור הציבורי, בפרקליטות או בדיני משפחה, דבר המנציח פערי שכר מובנים באותו מקצוע."
+            },
+            {
+                id: 45,
+                title: "גמישות מול קשיחות ביקוש לעבודה (צד המעסיק)",
+                category: "economics",
+                source: "ביקוש והיצע.pdf / שיעור 4",
+                tags: ["גמישות ביקוש", "קשיחות ביקוש", "פיטורים", "שכר"],
+                content: "יש להבחין בין קשיחות מוסדית (EPL) לבין קשיחות/גמישות הביקוש של המעסיק עצמו לעובדים: 1. ביקוש גמיש לעבודה - מצב שבו שינוי קטן וקל בגובה השכר בשוק גורם למעסיקים לבצע התאמות קיצוניות של פיטורים המוניים או צמצום דרסטי של משרות. 2. ביקוש קשיח לעבודה - מצב שבו המעסיק תלוי באופן מוחלט בעובדים ואינו יכול או מוכן לוותר עליהם ולפטרם בקלות, גם כאשר מתרחשים שינויים משמעותיים בשכר או בעלויות העסקתם."
+            },
+            {
+                id: 46,
+                title: "הכשרה תוך כדי עבודה (On the Job Training)",
+                category: "theories",
+                source: "מילון מושגים מפורט_ שוק העבודה.docx / תיאוריית ההון האנושי.pdf",
+                tags: ["הכשרה תוך כדי עבודה", "ניסיון", "פריון", "קורסים"],
+                content: "על פי תיאוריית ההון האנושי, חלק ניכר מהפריון והשכר של העובד נרכש לא במוסדות הלימוד הפורמליים אלא כ'הכשרה תוך כדי עבודה' (On the Job Training). תהליך זה כולל למידה מעשית, קורסים פנימיים וצבירת ניסיון מעשי במהלך ביצוע התפקיד בפועל. הכשרה זו מעלה ישירות את פריון העבודה של העובד ומסבירה מדוע השכר נוטה לעלות עם הותק והניסיון המקצועי בארגון."
+            },
+            {
+                id: 47,
+                title: "כוח קבוצה דמוגרפי (Demographic Group Power)",
+                category: "theories",
+                source: "מילון מושגים מפורט_ שוק העבודה.docx",
+                tags: ["כוח קבוצה", "דמוגרפיה", "מיעוטים", "משא ומתן", "שכר"],
+                content: "תיאוריית 'כוח קבוצה דמוגרפי' (Demographic Group Power) טוענת כי כניסה מסיבית ועלייה בריכוז של קבוצות מיעוט (נשים, ערבים, מהגרים) לתוך מקצוע או ענף מסוים אינה מביאה בהכרח לירידת שכר או יוקרה כפי שטוענות גישות סגרגציה קלאסיות. להפך, גישה זו מראה כי התרכזות דמוגרפית גבוהה מאפשרת לקבוצת המיעוט להתארגן, ליצור מוקדי השפעה ולהגדיל את כוחן המיקוח הקבוצתי במשא ומתן המשותף מול מעסיקים על תנאי העבודה והשכר."
+            },
+            {
+                id: 48,
+                title: "מבנה הזدמנויות",
+                category: "theories",
+                source: "מילון מושגים מפורט_ שוק העבודה.docx / שיעור 9",
+                tags: ["מבנה הזדמנויות", "אזור", "ענף", "פערים"],
+                content: "על פי הגישות המבניות להסבר אי-שוויון, 'מבנה הזדמנויות' (Opportunity Structure) קובע כי השכר והמוביליות החברתית של הפרט אינם מושפעים רק ממאמציו או מכישוריו האישיים. המבנה מייצג חשיפה שונה להזדמנויות תעסוקה איכותיות לפי מיקום גיאוגרפי (פריפריה לעומת מרכז), ענף כלכלי חזק או פירמה מסוימת. פרט בעל הון אנושי זהה לחלוטין יזכה לשכר מופחת ותנאים ירודים במידה והוא פועל תחת מבנה הזדמנויות חלש או חסום."
+            }
+        ];
+
+        // Switch tabs
+        function switchTab(tabId) {
+            document.getElementById('content-search').classList.add('hidden');
+            document.getElementById('content-calculator').classList.add('hidden');
+
+            // Show target
+            document.getElementById(`content-${tabId}`).classList.remove('hidden');
+
+            // Tab button styling resets
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn px-3.5 py-2.5 sm:px-5 sm:py-3 rounded-xl text-xs sm:text-sm md:text-base font-semibold text-slate-600 hover:text-indigo-600 hover:bg-slate-50 transition-all whitespace-nowrap flex items-center gap-1.5 sm:gap-2";
+            });
+
+            // Set active styles
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            activeBtn.className = "tab-btn px-3.5 py-2.5 sm:px-5 sm:py-3 rounded-xl text-xs sm:text-sm md:text-base font-bold transition-all whitespace-nowrap flex items-center gap-1.5 sm:gap-2 bg-indigo-50 text-indigo-700 border-2 border-indigo-600/10";
+            
+            if (tabId === 'calculator') {
+                calculateLaborStats();
+            } else if (tabId === 'search') {
+                performSearch();
+            }
+        }
+
+        // Search execution
+        function setSearchQuery(query) {
+            document.getElementById('search-input').value = query;
+            performSearch();
+        }
+
+        function setCategoryFilter(category) {
+            activeCategory = category;
+            
+            // Highlight current button
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.className = "cat-btn px-3.5 py-1.5 rounded-lg text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors";
+            });
+            document.getElementById(`cat-${category}`).className = "cat-btn px-3.5 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 text-white transition-colors";
+            
+            performSearch();
+        }
+
+        function clearSearch() {
+            document.getElementById('search-input').value = '';
+            setCategoryFilter('all');
+        }
+
+        function performSearch() {
+            const query = document.getElementById('search-input').value.trim().toLowerCase();
+            const resultsContainer = document.getElementById('search-results');
+            resultsContainer.innerHTML = '';
+
+            // Filter
+            const filtered = searchCorpus.filter(item => {
+                const matchesCategory = (activeCategory === 'all' || item.category === activeCategory);
+                if (!matchesCategory) return false;
+
+                if (!query) return true; // Show all within category if query is empty
+
+                return (
+                    item.title.toLowerCase().includes(query) ||
+                    item.content.toLowerCase().includes(query) ||
+                    item.tags.some(tag => tag.toLowerCase().includes(query))
+                );
+            });
+
+            // Update Counter
+            const counter = document.getElementById('search-counter');
+            if (!query && activeCategory === 'all') {
+                counter.innerText = 'מציג את כל ' + filtered.length + ' נושאי הליבה המאונדקסים';
+            } else {
+                counter.innerText = 'נמצאו ' + filtered.length + ' נושאים תואמים לחיפוש הנוכחי';
+            }
+
+            if (filtered.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div class="text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-slate-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-slate-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <h3 class="font-bold text-lg text-slate-700">לא נמצאו תוצאות מתאימות</h3>
+                        <p class="text-slate-400 text-sm mt-1">נסו לחפש מונח מדויק או בחרו קטגוריה אחרת מלמעלה</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Render Results
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-5 rounded-2xl border border-slate-200 hover:border-indigo-300 hover:shadow-sm transition-all space-y-3";
+
+                let displayTitle = item.title;
+                let displayContent = item.content;
+
+                if (query) {
+                    const regex = new RegExp('(' + escapeRegExp(query) + ')', 'gi');
+                    displayTitle = item.title.replace(regex, '<mark class="bg-yellow-200 text-slate-900 rounded px-0.5 font-bold">$1</mark>');
+                    displayContent = item.content.replace(regex, '<mark class="bg-yellow-200 text-slate-900 rounded px-0.5 font-bold">$1</mark>');
+                }
+
+                // Render tags safely with string concatenation to avoid template literal bugs
+                const tagsHTML = item.tags.map(tag => '<span class="bg-slate-50 text-slate-500 px-2 py-0.5 rounded text-[10px] font-medium border border-slate-200/50">' + tag + '</span>').join('');
+
+                card.innerHTML = `
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
+                        <h4 class="font-extrabold text-base text-slate-900">${displayTitle}</h4>
+                        <span class="text-xs bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-full font-bold">${getCategoryHebrew(item.category)}</span>
+                    </div>
+                    
+                    <p class="text-sm text-slate-600 leading-relaxed">${displayContent}</p>
+
+                    <div class="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs border-t border-slate-100/60 mt-1">
+                        <span class="text-slate-400 flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                            מקור מבוסס: <strong class="font-semibold text-slate-500">${item.source}</strong>
+                        </span>
+                        <div class="flex flex-wrap gap-1">
+                            ${tagsHTML}
+                        </div>
+                    </div>
+                `;
+                resultsContainer.appendChild(card);
+            });
+        }
+
+        function getCategoryHebrew(cat) {
+            switch(cat) {
+                case 'statistics': return 'סטטיסטיקה והגדרות למ\"ס';
+                case 'economics': return 'היצע, ביקוש ותחרות';
+                case 'theories': return 'תיאוריות וסטטוס חברתי';
+                case 'discrimination': return 'סגרגציה ואפליה';
+                case 'segments': return 'שוק העבודה הישראלי';
+                default: return 'כללי';
+            }
+        }
+
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        // --- INTERACTIVE CALCULATOR LOGIC ---
+        function calculateLaborStats() {
+            const pop = parseFloat(document.getElementById('calc-pop').value) || 0;
+            const emp = parseFloat(document.getElementById('calc-emp').value) || 0;
+            const unemp = parseFloat(document.getElementById('calc-unemp').value) || 0;
+
+            const lf = emp + unemp;
+            const participationRate = pop > 0 ? (lf / pop) * 100 : 0;
+            const employmentRate = pop > 0 ? (emp / pop) * 100 : 0;
+            const unemploymentRate = lf > 0 ? (unemp / lf) * 100 : 0;
+
+            // Update result fields
+            document.getElementById('out-lf').innerText = lf.toLocaleString();
+            document.getElementById('out-part-rate').innerText = participationRate.toFixed(2) + '%';
+            document.getElementById('out-emp-rate').innerText = employmentRate.toFixed(2) + '%';
+            document.getElementById('out-unemp-rate').innerText = unemploymentRate.toFixed(2) + '%';
+
+            // Show step explanations with dynamic numbers and responsive LTR-safe elements
+            document.getElementById('calc-step-1').innerHTML = `
+                <div class="flex items-center gap-2 mt-1">
+                    <span class="text-slate-500 font-medium">חישוב בפועל:</span>
+                    <span class="font-mono font-bold bg-slate-100 text-slate-900 px-2 py-0.5 rounded" dir="ltr">
+                        ${emp.toLocaleString()} + ${unemp.toLocaleString()} = ${lf.toLocaleString()}
+                    </span>
+                    <span class="text-slate-500">נפשות / אלפים</span>
+                </div>
+            `;
+
+            document.getElementById('calc-step-2').innerHTML = `
+                <div class="flex items-center flex-wrap gap-2 mt-1">
+                    <span class="text-slate-500 font-medium">חישוב בפועל:</span>
+                    <div class="inline-flex items-center gap-1 font-mono font-bold bg-slate-100 text-slate-900 px-2.5 py-0.5 rounded" dir="ltr">
+                        <div class="inline-flex flex-col items-center text-xs">
+                            <span class="border-b border-slate-400 px-1 pb-0.5">${lf.toLocaleString()}</span>
+                            <span class="pt-0.5 px-1">${pop.toLocaleString()}</span>
+                        </div>
+                        <span>× 100 = ${participationRate.toFixed(2)}%</span>
+                    </div>
+                </div>
+            `;
+            
+            const stepEmp = document.getElementById('calc-step-employment');
+            if (stepEmp) {
+                stepEmp.innerHTML = `
+                    <div class="flex items-center flex-wrap gap-2 mt-1">
+                        <span class="text-slate-500 font-medium">חישוב בפועל:</span>
+                        <div class="inline-flex items-center gap-1 font-mono font-bold bg-slate-100 text-slate-900 px-2.5 py-0.5 rounded" dir="ltr">
+                            <div class="inline-flex flex-col items-center text-xs">
+                                <span class="border-b border-slate-400 px-1 pb-0.5">${emp.toLocaleString()}</span>
+                                <span class="pt-0.5 px-1">${pop.toLocaleString()}</span>
+                            </div>
+                            <span>× 100 = ${employmentRate.toFixed(2)}%</span>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('calc-step-3').innerHTML = `
+                <div class="flex items-center flex-wrap gap-2 mt-1">
+                    <span class="text-slate-500 font-medium">חישוב בפועל:</span>
+                    <div class="inline-flex items-center gap-1 font-mono font-bold bg-slate-100 text-slate-900 px-2.5 py-0.5 rounded" dir="ltr">
+                        <div class="inline-flex flex-col items-center text-xs">
+                            <span class="border-b border-slate-400 px-1 pb-0.5">${unemp.toLocaleString()}</span>
+                            <span class="pt-0.5 px-1">${lf.toLocaleString()}</span>
+                        </div>
+                        <span>× 100 = ${unemploymentRate.toFixed(2)}%</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Initialize
+        window.onload = function() {
+            performSearch();
+            calculateLaborStats();
+        }
+    </script>
+</body>
+</html>
